@@ -60,7 +60,7 @@ ${fonts}
 }
 *{margin:0;padding:0;box-sizing:border-box;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale}
 html{scroll-behavior:smooth}
-body{background:var(--bg);color:var(--milk);font-family:'Manrope',system-ui,sans-serif;overflow-x:hidden}
+body{background:var(--bg);color:var(--milk);font-family:'Manrope',system-ui,sans-serif;overflow-x:hidden;overflow-wrap:break-word}
 img{max-width:100%;display:block}
 ::selection{background:var(--accent);color:var(--bg)}
 ::-webkit-scrollbar{width:8px}
@@ -76,7 +76,7 @@ img{max-width:100%;display:block}
 header{position:fixed;top:0;left:0;right:0;z-index:50;transition:background .5s,border-color .5s}
 header.scrolled{background:rgba(20,23,26,.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.05)}
 .nav-inner{max-width:1280px;margin:0 auto;padding:0 clamp(16px,4vw,40px);display:flex;align-items:center;justify-content:space-between;height:76px}
-.brand{font-family:'Fraunces',Georgia,serif;font-size:clamp(17px,1.9vw,24px);font-weight:700;letter-spacing:clamp(.14em,.6vw,.22em);color:var(--milk);white-space:nowrap}
+.brand{font-family:'Fraunces',Georgia,serif;font-size:clamp(15px,4.4vw,24px);font-weight:700;letter-spacing:clamp(.1em,.5vw,.22em);color:var(--milk);white-space:nowrap;max-width:100%}
 .nav-links{display:none;align-items:center;gap:clamp(20px,2.5vw,48px)}
 @media(min-width:768px){.nav-links{display:flex}}
 .nav-links a{font-size:clamp(13px,1.2vw,14px);font-weight:500;letter-spacing:.02em;color:var(--muted);transition:color .3s;text-decoration:none}
@@ -100,11 +100,26 @@ header.scrolled{background:rgba(20,23,26,.85);backdrop-filter:blur(12px);border-
 /* ================= Hero (cinematic scene) ================= */
 .hero{position:relative;min-height:100vh;display:flex;align-items:center;overflow:hidden}
 .hero-bg{position:absolute;inset:-5%;z-index:0;will-change:transform}
-.hero-img{width:100%;height:100%;object-fit:cover;animation:kenburns 26s ease-in-out infinite;will-change:transform}
+.hero-layer{position:absolute;inset:0}
+.hero-img{width:100%;height:100%;object-fit:cover;animation:kenburns 24s ease-in-out infinite;will-change:transform}
+.hero-layer[data-l="1"]{animation:crossfade 16s ease-in-out infinite}
+.hero-layer[data-l="1"] .hero-img{animation-delay:-8s}
 @keyframes kenburns{
   0%{transform:scale(1.02) translate(0,0)}
-  50%{transform:scale(1.13) translate(-1.6%,-1.2%)}
+  50%{transform:scale(1.17) translate(-1.8%,-1.4%)}
   100%{transform:scale(1.02) translate(0,0)}
+}
+@keyframes crossfade{
+  0%,43%{opacity:0}
+  51%,95%{opacity:1}
+  100%{opacity:0}
+}
+.hero-mist{position:absolute;inset:-10%;z-index:1;pointer-events:none;
+  background:radial-gradient(55% 38% at 30% 62%, rgba(237,231,220,.09), transparent 70%);
+  animation:mist 24s ease-in-out infinite;will-change:transform}
+@keyframes mist{
+  0%,100%{transform:translateX(-7%) translateY(0)}
+  50%{transform:translateX(9%) translateY(-2%)}
 }
 .hero-vignette{position:absolute;inset:0;z-index:1;pointer-events:none;
   background:
@@ -123,13 +138,13 @@ header.scrolled{background:rgba(20,23,26,.85);backdrop-filter:blur(12px);border-
 .hero-content{position:relative;z-index:3;max-width:1280px;margin:0 auto;width:100%;
   padding:clamp(96px,13vh,150px) clamp(20px,5vw,40px) clamp(80px,10vh,120px)}
 .hero-badge{display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(124,85,52,.3);border-radius:999px;
-  padding:6px clamp(12px,1.6vw,16px);font-size:clamp(10px,1.1vw,12px);font-weight:600;letter-spacing:clamp(.16em,.8vw,.22em);
-  text-transform:uppercase;color:var(--wood-oak);white-space:nowrap}
+  padding:6px clamp(12px,1.6vw,16px);font-size:clamp(10px,2.4vw,12px);font-weight:600;letter-spacing:clamp(.14em,.7vw,.22em);
+  text-transform:uppercase;color:var(--wood-oak);white-space:normal;max-width:100%;overflow-wrap:break-word}
 .hero-badge i{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 2.4s ease-in-out infinite}
 @keyframes pulse{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:1;transform:scale(1.4)}}
 .hero h1{margin-top:clamp(20px,3vw,28px);font-family:'Fraunces',Georgia,serif;
-  font-size:clamp(30px,6.4vw,62px);font-weight:700;line-height:1.06;color:var(--milk);
-  text-wrap:balance;max-width:14ch;position:relative}
+  font-size:clamp(26px,6.6vw,62px);font-weight:700;line-height:1.06;color:var(--milk);
+  text-wrap:balance;max-width:100%;position:relative}
 .hero h1::after{content:"";position:absolute;inset:0;pointer-events:none;
   background:linear-gradient(100deg, transparent 34%, rgba(237,231,220,.16) 50%, transparent 66%);
   transform:translateX(-130%);animation:shine 8s ease-in-out 1.4s infinite}
@@ -337,8 +352,10 @@ footer{border-top:1px solid rgba(255,255,255,.08);background:var(--bg-deep);padd
 <!-- Hero: кинематографическая сцена -->
 <section class="hero" id="top">
   <div class="hero-bg">
-    <img class="hero-img" src="${heroImg}" alt="Деревянная архитектура в глубоких тёмных тонах">
+    <div class="hero-layer" data-l="0"><img class="hero-img" src="${heroImg}" alt="Деревянная архитектура в глубоких тёмных тонах"></div>
+    <div class="hero-layer" data-l="1"><img class="hero-img" src="${archImg}" alt="Архитектура деревянного дома в тёмных тонах"></div>
   </div>
+  <div class="hero-mist"></div>
   <div class="hero-glow"></div>
   <div class="hero-sweep"></div>
   <canvas class="hero-particles" aria-hidden="true"></canvas>
@@ -677,6 +694,65 @@ let targetShade = SHADES[0];
 let compare = false;
 let img = null;
 let animId = null;
+let maskReady = false;
+
+// МАСКА ДЕРЕВА: перекрашиваем только деревянные поверхности.
+// Небо, зелень, трава, стекло и другие поверхности остаются без изменений.
+const isWoodPixel = (r, g, b) => {
+  const max = Math.max(r,g,b), min = Math.min(r,g,b);
+  const d = max - min;
+  let h;
+  if (d === 0) h = -1;
+  else if (max === r) h = ((g-b)/d) % 6;
+  else if (max === g) h = (b-r)/d + 2;
+  else h = (r-g)/d + 4;
+  h *= 60;
+  if (h < 0) h += 360;
+  const s = max === 0 ? 0 : d / max;
+  const v = max / 255;
+  if (h < 8 || h > 60) return false;      // не тёплые оттенки: небо, зелень, фиолет
+  if (s < 0.08 && v > 0.78) return false; // яркие ненасыщенные: стекло, белое
+  if (v < 0.05) return false;            // глубокая чёрная тень
+  return true;
+};
+
+const maskCanvas = document.createElement('canvas');
+const maskCtx = maskCanvas.getContext('2d');
+const tintCanvas = document.createElement('canvas');
+const tintCtx = tintCanvas.getContext('2d');
+
+function buildMask() {
+  maskCanvas.width = img.width;
+  maskCanvas.height = img.height;
+  tintCanvas.width = img.width;
+  tintCanvas.height = img.height;
+  const srcCanvas = document.createElement('canvas');
+  srcCanvas.width = img.width;
+  srcCanvas.height = img.height;
+  const srcCtx = srcCanvas.getContext('2d');
+  srcCtx.drawImage(img, 0, 0);
+  const src = srcCtx.getImageData(0, 0, img.width, img.height);
+  const md = maskCtx.createImageData(img.width, img.height);
+  for (let i = 0; i < src.data.length; i += 4) {
+    const wood = isWoodPixel(src.data[i], src.data[i+1], src.data[i+2]);
+    md.data[i] = 255;
+    md.data[i+1] = 255;
+    md.data[i+2] = 255;
+    md.data[i+3] = wood ? 255 : 0;
+  }
+  maskCtx.putImageData(md, 0, 0);
+  maskReady = true;
+}
+
+// Тир-маска: цвет оттенка наложен только на пиксели дерева
+function buildTint(color) {
+  tintCtx.clearRect(0, 0, tintCanvas.width, tintCanvas.height);
+  tintCtx.fillStyle = color;
+  tintCtx.fillRect(0, 0, tintCanvas.width, tintCanvas.height);
+  tintCtx.globalCompositeOperation = 'destination-in';
+  tintCtx.drawImage(maskCanvas, 0, 0);
+  tintCtx.globalCompositeOperation = 'source-over';
+}
 
 // Парсинг цвета: и hex (#C39B6F), и rgb(...)
 const parseColor = (c) => {
@@ -706,9 +782,9 @@ swatchesEl.querySelectorAll('.swatch').forEach(btn => {
   });
 });
 
-// Загрузка изображения
+// Загрузка изображения и построение маски дерева
 const imgEl = new Image();
-imgEl.onload = () => { img = imgEl; draw(); startTransition(); };
+imgEl.onload = () => { img = imgEl; buildMask(); draw(); startTransition(); };
 imgEl.src = SHADE_IMG;
 
 function draw() {
@@ -738,16 +814,15 @@ function draw() {
       ctx.clip();
     }
     ctx.drawImage(img, ox, oy, dw, dh);
-    if (tint) {
-      const [r,g,b] = parseColor(tint);
+    if (tint && maskReady) {
+      buildTint(tint);
       // Multiply — настоящая перекраска, сохраняет текстуру и светлоту
       ctx.globalCompositeOperation = 'multiply';
-      ctx.fillStyle = 'rgb(' + r + ',' + g + ',' + b + ')';
-      ctx.fillRect(0, 0, rect.width, rect.height);
+      ctx.drawImage(tintCanvas, ox, oy, dw, dh);
       // Overlay — добавляет глубину оттенку, не утяжеляя цвет
       ctx.globalCompositeOperation = 'overlay';
-      ctx.globalAlpha = 0.2;
-      ctx.fillRect(0, 0, rect.width, rect.height);
+      ctx.globalAlpha = 0.18;
+      ctx.drawImage(tintCanvas, ox, oy, dw, dh);
       ctx.globalAlpha = 1;
       ctx.globalCompositeOperation = 'source-over';
     }
