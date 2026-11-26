@@ -1,6 +1,6 @@
 // Генератор автономного HTML-прототипа Deep Color.
 // Собирает prototype.html со встроенными шрифтами (base64) и изображениями.
-import { readFileSync, writeFileSync } from 'node:fs';
+import { readFileSync, writeFileSync, copyFileSync, mkdirSync } from 'node:fs';
 import { join, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -32,13 +32,15 @@ const fonts = [
   )
   .join('\n');
 
-const BRANCH = 'arena/537950fb-wood-coatings-store';
-const raw = (file) =>
-  `https://raw.githubusercontent.com/Alexander080990/wood-coatings-store/${BRANCH}/${file}`;
+const siteDir = join(root, 'site');
+mkdirSync(join(siteDir, 'images'), { recursive: true });
+for (const f of ['hero-wood.jpg', 'shade-house.jpg', 'architecture.jpg']) {
+  copyFileSync(join(root, 'public', f), join(siteDir, 'images', f));
+}
 
-const heroImg = raw('public/hero-wood.jpg');
-const shadeImg = raw('public/shade-house.jpg');
-const archImg = raw('public/architecture.jpg');
+const heroImg = 'images/hero-wood.jpg';
+const shadeImg = 'images/shade-house.jpg';
+const archImg = 'images/architecture.jpg';
 
 const html = `<!DOCTYPE html>
 <html lang="ru">
@@ -674,7 +676,7 @@ document.getElementById('contact-form').addEventListener('submit', (e) => {
 </html>
 `;
 
-const out = join(root, 'prototype.html');
+const out = join(siteDir, 'index.html');
 writeFileSync(out, html);
-const sizeMB = (Buffer.byteLength(html) / (1024 * 1024)).toFixed(2);
-console.log('Готово:', out, '| размер:', sizeMB, 'MB');
+const sizeKB = (Buffer.byteLength(html) / 1024).toFixed(0);
+console.log('Готово:', out, '| размер:', sizeKB, 'KB');
