@@ -38,9 +38,9 @@ for (const f of ['hero-wood.jpg', 'shade-house.jpg', 'architecture.jpg']) {
   copyFileSync(join(root, 'public', f), join(siteDir, 'images', f));
 }
 
-const heroImg = 'images/hero-wood.jpg';
-const shadeImg = 'images/shade-house.jpg';
-const archImg = 'images/architecture.jpg';
+const heroImg = b64(join(root, 'public/hero-wood.jpg'));
+const shadeImg = b64(join(root, 'public/shade-house.jpg'));
+const archImg = b64(join(root, 'public/architecture.jpg'));
 
 const html = `<!DOCTYPE html>
 <html lang="ru">
