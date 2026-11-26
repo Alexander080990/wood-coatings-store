@@ -32,9 +32,13 @@ const fonts = [
   )
   .join('\n');
 
-const heroImg = b64(join(root, 'public/hero-wood.jpg'));
-const shadeImg = b64(join(root, 'public/shade-house.jpg'));
-const archImg = b64(join(root, 'public/architecture.jpg'));
+const BRANCH = 'arena/537950fb-wood-coatings-store';
+const raw = (file) =>
+  `https://raw.githubusercontent.com/Alexander080990/wood-coatings-store/${BRANCH}/${file}`;
+
+const heroImg = raw('public/hero-wood.jpg');
+const shadeImg = raw('public/shade-house.jpg');
+const archImg = raw('public/architecture.jpg');
 
 const html = `<!DOCTYPE html>
 <html lang="ru">
