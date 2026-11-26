@@ -6,8 +6,8 @@ import { fileURLToPath } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
 
-const b64 = (file) =>
-  'data:' +
+const b64 = (file, mime) =>
+  'data:' + mime + ';base64,' +
   readFileSync(file).toString('base64');
 
 // Шрифты
@@ -28,7 +28,7 @@ const fonts = [
 ]
   .map(
     ([name, file]) =>
-      `@font-face { font-family: '${name.split(' ')[0]}'; font-weight: ${name.split(' ')[1]}; font-style: normal; font-display: swap; src: url(${b64(join(root, file))}) format('woff2'); unicode-range: ${name.includes('cyrillic') ? 'U+0400-04FF' : 'U+0000-00FF'}; }`
+      `@font-face { font-family: '${name.split(' ')[0]}'; font-weight: ${name.split(' ')[1]}; font-style: normal; font-display: swap; src: url(${b64(join(root, file), 'application/font-woff2')}) format('woff2'); unicode-range: ${name.includes('cyrillic') ? 'U+0400-04FF' : 'U+0000-00FF'}; }`
   )
   .join('\n');
 
@@ -38,9 +38,9 @@ for (const f of ['hero-wood.jpg', 'shade-house.jpg', 'architecture.jpg']) {
   copyFileSync(join(root, 'public', f), join(siteDir, 'images', f));
 }
 
-const heroImg = b64(join(root, 'public/hero-wood.jpg'));
-const shadeImg = b64(join(root, 'public/shade-house.jpg'));
-const archImg = b64(join(root, 'public/architecture.jpg'));
+const heroImg = b64(join(root, 'public/hero-wood.jpg'), 'image/jpeg');
+const shadeImg = b64(join(root, 'public/shade-house.jpg'), 'image/jpeg');
+const archImg = b64(join(root, 'public/architecture.jpg'), 'image/jpeg');
 
 const html = `<!DOCTYPE html>
 <html lang="ru">
@@ -549,9 +549,13 @@ let targetShade = SHADES[0];
 let compare = false;
 let img = null;
 
-const hexToRgb = (hex) => {
-  const v = hex.replace('#','');
-  return [parseInt(v.slice(0,2),16), parseInt(v.slice(2,4),16), parseInt(v.slice(4,6),16)];
+const hexToRgb = (c) => {
+  if (c.indexOf('#') === 0) {
+    const v = c.replace('#','');
+    return [parseInt(v.slice(0,2),16), parseInt(v.slice(2,4),16), parseInt(v.slice(4,6),16)];
+  }
+  const m = c.match(/\\d+/g);
+  return [parseInt(m[0],10), parseInt(m[1],10), parseInt(m[2],10)];
 };
 
 swatchesEl.innerHTML = SHADES.map(s => \`
